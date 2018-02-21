@@ -20,6 +20,9 @@ public:
 private:
 	/** Crosshair asset pointer */
 	class UTexture2D* CrosshairTex;
+private:
+	/** First person 2D gun asset pointer */
+	class UTexture2D* GunTex;
 
 };
 

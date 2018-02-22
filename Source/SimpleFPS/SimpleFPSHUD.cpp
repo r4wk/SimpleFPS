@@ -10,7 +10,7 @@
 ASimpleFPSHUD::ASimpleFPSHUD()
 {
 	// Set the crosshair texture
-	static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshairTexObj(TEXT("/Game/FirstPerson/Textures/FirstPersonCrosshair"));
+	static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshairTexObj(TEXT("/Game/FirstPerson/Textures/crosshair_black"));
 	CrosshairTex = CrosshairTexObj.Object;
 	// Set the 2D gun texture
 	static ConstructorHelpers::FObjectFinder<UTexture2D> GunTexObj(TEXT("/Game/FirstPerson/FPWeapon/Textures/gun_pistol"));
@@ -37,6 +37,7 @@ void ASimpleFPSHUD::DrawHUD()
 	Canvas->DrawItem( TileItem );
 
 	// draw 2D gun
+	// TODO: switching of tex based on weapon type
 	FCanvasTileItem GunTileItem(GunDrawPosition, GunTex->Resource, FLinearColor::White);
 	const FVector2D GunDrawSize(128.0f, 128.0f);
 	GunTileItem.Size = GunDrawSize;

@@ -3,6 +3,8 @@
 
 #include "SimpleFPSCharacter.h"
 #include "SimpleFPSProjectile.h"
+#include "StaticLib.h"
+#include "Engine/Engine.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -140,6 +142,60 @@ void ASimpleFPSCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 
 void ASimpleFPSCharacter::OnFire()
 {
+
+	/**FCollisionQueryParams RV_TraceParams = FCollisionQueryParams(FName(TEXT("RV_Trace")), true, this);
+	RV_TraceParams.bTraceComplex = true;
+	RV_TraceParams.bTraceAsyncScene = true;
+	RV_TraceParams.bReturnPhysicalMaterial = false;
+
+	//Re-initialize hit info
+	FHitResult RV_Hit(ForceInit);
+	const FVector Start;
+	const FVector End;
+
+	//call GetWorld() from within an actor extending class
+	GetWorld()->LineTraceSingleByChannel (
+		RV_Hit,        //result
+		Start,    //start
+		End, //end
+		ECC_Pawn, //collision channel
+		RV_TraceParams
+	);
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Hitting %f"), RV_Hit.Distance));
+	}
+
+	if (RV_Hit.bBlockingHit)
+	{
+		if (GEngine) 
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("HIT!"));
+		}
+	}**/
+
+	APlayerController* Controller = GetWorld()->GetFirstPlayerController();
+	const FVector Start = Controller->GetFocalLocation();
+	const FVector End = Start + GetControlRotation().Vector() * 256;
+	FHitResult HitData(ForceInit);
+	if (UStaticLib::Trace(GetWorld(), Controller->GetPawn(), Start, End, HitData))
+	{
+
+		//Print out the name of the traced actor
+		if (HitData.GetActor())
+		{
+			Controller->ClientMessage(HitData.GetActor()->GetName());
+
+			//Print out distance from start of trace to impact point
+			Controller->ClientMessage("Trace Distance: " + FString::SanitizeFloat(HitData.Distance));
+		}
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Hitting %f"), HitData.GetActor()));
+		}
+	}
+
 	// try and fire a projectile
 	if (ProjectileClass != NULL)
 	{
